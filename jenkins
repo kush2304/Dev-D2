@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'kushdocker2301/Dev-D2'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/kush2304/Dev-D2'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${IMAGE_NAME}:latest")
+                }
+            }
+        }
+
+        stage('Push to DockerHub') {
+            steps {
+                script {
+                    docker.withRegistry('', "${DOCKER_CREDENTIALS_ID}") {
+                        docker.image("${IMAGE_NAME}:latest").push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                script {
+                    sh 'docker rm -f jenkins-app || true'
+                    sh "docker run -d --name jenkins-app -p 80:3000 ${IMAGE_NAME}:latest"
+                }
+            }
+        }
+    }
+}
+
