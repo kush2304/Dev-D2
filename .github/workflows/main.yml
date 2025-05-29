@@ -15,8 +15,8 @@ jobs:
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ kushdocker2301}}
+          password: ${{ dckr_pat_v-2mppQC8wPRTFmXl2VFxC0iR1c }}
 
       - name: Build and Push Docker image
         uses: docker/build-push-action@v5
